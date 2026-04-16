@@ -5,12 +5,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>NOVA X ROOT - KEY</title>
+<title>NOVA X ROOT KEY</title>
 
 <style>
 
 body{
-background:#0f0f0f;
+background:#0d1117;
 font-family:sans-serif;
 color:white;
 display:flex;
@@ -21,12 +21,12 @@ margin:0;
 }
 
 .box{
-background:#151515;
+background:#161b22;
 padding:40px;
 border-radius:15px;
-border:2px solid #ff3c3c;
-text-align:center;
 width:420px;
+text-align:center;
+border:2px solid #ff3c3c;
 }
 
 .logo{
@@ -41,8 +41,8 @@ background:black;
 border:2px solid #333;
 padding:20px;
 border-radius:10px;
-font-size:18px;
 font-family:monospace;
+font-size:18px;
 margin-bottom:20px;
 cursor:pointer;
 }
@@ -54,8 +54,8 @@ border:none;
 border-radius:25px;
 background:#ff3c3c;
 color:white;
-font-weight:bold;
 font-size:16px;
+font-weight:bold;
 cursor:pointer;
 }
 
@@ -73,10 +73,10 @@ color:#ffaa00;
 
 <div class="box">
 
-<div class="logo">🔥 NOVA X ROOT</div>
+<div class="logo">🔥 NOVA KEY SYSTEM</div>
 
-<div class="key" id="keyBox">
-🔒 Click Generate Key
+<div id="keyBox" class="key">
+Click Generate Key
 </div>
 
 <button onclick="generate()">GENERATE KEY</button>
@@ -91,58 +91,78 @@ const API="83bdbdcd334319be55c53b1ec5f8b41e5fa8005e";
 
 const RETURN_URL="https://pawanmaurya7291-max.github.io/Getkey/?done=1";
 
+function generate(){
+
+document.getElementById("status").innerText="Creating short link...";
+
+let apiLink = `https://earnlinks.in/api?api=${API}&url=${encodeURIComponent(RETURN_URL)}&format=text`;
+
+fetch(apiLink)
+.then(res=>res.text())
+.then(shortUrl=>{
+
+if(shortUrl.startsWith("http")){
+
+window.location.href = shortUrl;
+
+}else{
+
+document.getElementById("status").innerText="API Error";
+
+}
+
+});
+
+}
+
+
+
 function randomKey(){
 
 const chars="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
-let k1="",k2="";
+let p1="",p2="";
 
 for(let i=0;i<4;i++){
 
-k1+=chars[Math.floor(Math.random()*chars.length)];
-k2+=chars[Math.floor(Math.random()*chars.length)];
+p1+=chars[Math.floor(Math.random()*chars.length)];
+p2+=chars[Math.floor(Math.random()*chars.length)];
 
 }
 
-return "NOVA-"+k1+"-"+k2+"-"+Date.now().toString().slice(-4);
+return "NOVA-"+p1+"-"+p2+"-"+Date.now().toString().slice(-4);
 
 }
 
-function generate(){
 
-document.getElementById("status").innerHTML="Opening shortner...";
-
-const short="https://earnlinks.in/api?api="+API+"&url="+encodeURIComponent(RETURN_URL);
-
-window.open(short,"_blank");
-
-}
 
 function showKey(){
 
-const key=randomKey();
+let key=randomKey();
 
-document.getElementById("keyBox").innerHTML=key;
+document.getElementById("keyBox").innerText=key;
 
 navigator.clipboard.writeText(key);
 
-document.getElementById("status").innerHTML="✅ Key copied automatically";
+document.getElementById("status").innerText="Key Copied • Expire in 5 sec";
 
 expire();
 
 }
 
+
+
 function expire(){
 
-let time=5;
+let t=5;
 
-const timer=setInterval(()=>{
+let timer=setInterval(()=>{
 
-document.getElementById("status").innerHTML="Page expire in "+time+" sec";
+t--;
 
-time--;
+document.getElementById("status").innerText="Expire in "+t+" sec";
 
-if(time<0){
+if(t<=0){
 
 clearInterval(timer);
 
@@ -154,7 +174,9 @@ document.body.innerHTML="<h2 style='color:red;text-align:center'>KEY EXPIRED</h2
 
 }
 
-function check(){
+
+
+function checkReturn(){
 
 const params=new URLSearchParams(window.location.search);
 
@@ -166,10 +188,9 @@ showKey();
 
 }
 
-check();
+checkReturn();
 
 </script>
 
 </body>
-
 </html>
