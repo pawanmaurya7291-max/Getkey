@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOVA X ROOT - Get Key</title>
+
+<style>
+
+body{
+background:#0f0f0f;
+font-family:sans-serif;
+color:white;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+margin:0;
+}
+
+.container{
+background:#151515;
+padding:40px;
+border-radius:15px;
+text-align:center;
+width:400px;
+border:2px solid #ff3c3c;
+box-shadow:0 0 25px rgba(255,0,0,0.3);
+}
+
+.logo{
+font-size:28px;
+font-weight:bold;
+color:#ff3c3c;
+margin-bottom:10px;
+}
+
+.subtitle{
+color:#888;
+margin-bottom:25px;
+}
+
+.keybox{
+background:black;
+border:2px solid #333;
+padding:20px;
+border-radius:10px;
+font-family:monospace;
+font-size:18px;
+margin-bottom:20px;
+cursor:pointer;
+}
+
+button{
+padding:15px;
+width:100%;
+border:none;
+border-radius:25px;
+background:#ff3c3c;
+color:white;
+font-weight:bold;
+font-size:16px;
+cursor:pointer;
+}
+
+button:hover{
+background:#ff5e5e;
+}
+
+.status{
+margin-top:15px;
+font-size:13px;
+color:#ffaa00;
+}
+
+.features{
+text-align:left;
+margin-bottom:20px;
+}
+
+.features li{
+list-style:none;
+font-size:13px;
+color:#aaa;
+padding:3px 0;
+}
+
+.features li::before{
+content:"✓ ";
+color:#00ff64;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="logo">🔥 NOVA X ROOT</div>
+<div class="subtitle">Free Fire Max Mod Menu</div>
+
+<ul class="features">
+<li>Aimbot + Silent Aim</li>
+<li>ESP Box / Line</li>
+<li>Speed Hack</li>
+<li>Sniper Fast Switch</li>
+<li>Anti Ban</li>
+</ul>
+
+<div id="keybox" class="keybox">
+🔒 Click Generate Key
+</div>
+
+<button id="generate">GENERATE KEY</button>
+
+<div class="status" id="status"></div>
+
+</div>
+
+
+<script>
+
+const API_KEY="83bdbdcd334319be55c53b1ec5f8b41e5fa8005e";
+const CURRENT_URL=window.location.href.split("?")[0];
+
+let keyGenerated=false;
+
+function randomKey(){
+
+const chars="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+let part1="",part2="";
+
+for(let i=0;i<4;i++){
+
+part1+=chars.charAt(Math.floor(Math.random()*chars.length));
+part2+=chars.charAt(Math.floor(Math.random()*chars.length));
+
+}
+
+const time=Date.now().toString().slice(-4);
+
+return "NOVA-"+part1+"-"+part2+"-"+time;
+
+}
+
+
+async function createShortLink(){
+
+const returnUrl=CURRENT_URL+"?done=1";
+
+const api="https://earnlinks.in/api?api="+API_KEY+"&url="+encodeURIComponent(returnUrl);
+
+try{
+
+const res=await fetch(api);
+const text=await res.text();
+
+if(text.startsWith("http"))
+return text.trim();
+
+}catch(e){}
+
+return "https://earnlinks.in/st?api="+API_KEY+"&url="+encodeURIComponent(returnUrl);
+
+}
+
+
+
+document.getElementById("generate").onclick=async function(){
+
+if(keyGenerated)return;
+
+const status=document.getElementById("status");
+const keybox=document.getElementById("keybox");
+
+status.innerHTML="Creating short link...";
+
+const link=await createShortLink();
+
+status.innerHTML="Opening shortner... complete it and come back.";
+
+window.open(link,"_blank");
+
+}
+
+
+
+function checkReturn(){
+
+const params=new URLSearchParams(window.location.search);
+
+if(params.get("done")=="1" && !keyGenerated){
+
+const key=randomKey();
+
+document.getElementById("keybox").innerText=key;
+
+document.getElementById("status").innerHTML="✅ Key generated. Tap key to copy.";
+
+keyGenerated=true;
+
+navigator.clipboard.writeText(key);
+
+}
+
+}
+
+document.getElementById("keybox").onclick=function(){
+
+if(!keyGenerated)return;
+
+navigator.clipboard.writeText(this.innerText);
+
+this.innerText="COPIED!";
+
+setTimeout(()=>{
+this.innerText=randomKey();
+},1000);
+
+}
+
+checkReturn();
+
+</script>
+
+</body>
+</html>
