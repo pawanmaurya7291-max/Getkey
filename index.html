@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NOVA X ROOT - Get Key</title>
+
+<title>NOVA X ROOT - KEY</title>
 
 <style>
 
@@ -18,35 +20,29 @@ height:100vh;
 margin:0;
 }
 
-.container{
+.box{
 background:#151515;
 padding:40px;
 border-radius:15px;
+border:2px solid #ff3c3c;
 text-align:center;
 width:420px;
-border:2px solid #ff3c3c;
-box-shadow:0 0 25px rgba(255,0,0,0.3);
 }
 
 .logo{
-font-size:28px;
-font-weight:bold;
+font-size:26px;
 color:#ff3c3c;
-margin-bottom:10px;
+margin-bottom:20px;
+font-weight:bold;
 }
 
-.subtitle{
-color:#888;
-margin-bottom:25px;
-}
-
-.keybox{
+.key{
 background:black;
 border:2px solid #333;
 padding:20px;
 border-radius:10px;
-font-family:monospace;
 font-size:18px;
+font-family:monospace;
 margin-bottom:20px;
 cursor:pointer;
 }
@@ -63,143 +59,90 @@ font-size:16px;
 cursor:pointer;
 }
 
-button:hover{
-background:#ff5e5e;
-}
-
 .status{
 margin-top:15px;
 font-size:13px;
 color:#ffaa00;
 }
 
-.expire{
-margin-top:10px;
-color:#ff4d4d;
-font-size:13px;
-}
-
 </style>
+
 </head>
 
 <body>
 
-<div class="container">
+<div class="box">
 
 <div class="logo">🔥 NOVA X ROOT</div>
-<div class="subtitle">Free Fire Max Mod Menu</div>
 
-<div id="keybox" class="keybox">
+<div class="key" id="keyBox">
 🔒 Click Generate Key
 </div>
 
-<button id="generate">GENERATE KEY</button>
+<button onclick="generate()">GENERATE KEY</button>
 
 <div class="status" id="status"></div>
-<div class="expire" id="expire"></div>
 
 </div>
 
 <script>
 
-const API_KEY="83bdbdcd334319be55c53b1ec5f8b41e5fa8005e";
+const API="83bdbdcd334319be55c53b1ec5f8b41e5fa8005e";
 
-const BASE_URL="https://pawanmaurya7291-max.github.io/Getkey/";
-
-let keyGenerated=false;
+const RETURN_URL="https://pawanmaurya7291-max.github.io/Getkey/?done=1";
 
 function randomKey(){
 
 const chars="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
-let part1="",part2="";
+let k1="",k2="";
 
 for(let i=0;i<4;i++){
 
-part1+=chars[Math.floor(Math.random()*chars.length)];
-part2+=chars[Math.floor(Math.random()*chars.length)];
+k1+=chars[Math.floor(Math.random()*chars.length)];
+k2+=chars[Math.floor(Math.random()*chars.length)];
 
 }
 
-const time=Date.now().toString().slice(-4);
-
-return "NOVA-"+part1+"-"+part2+"-"+time;
+return "NOVA-"+k1+"-"+k2+"-"+Date.now().toString().slice(-4);
 
 }
 
-
-async function createShort(){
-
-const returnUrl=BASE_URL+"?done=1";
-
-const api="https://earnlinks.in/api?api="+API_KEY+"&url="+encodeURIComponent(returnUrl);
-
-try{
-
-const res=await fetch(api);
-const text=await res.text();
-
-if(text.startsWith("http"))
-return text.trim();
-
-}catch(e){}
-
-return "https://earnlinks.in/st?api="+API_KEY+"&url="+encodeURIComponent(returnUrl);
-
-}
-
-
-
-document.getElementById("generate").onclick=async function(){
-
-if(keyGenerated)return;
-
-document.getElementById("status").innerHTML="Creating shortner...";
-
-const link=await createShort();
+function generate(){
 
 document.getElementById("status").innerHTML="Opening shortner...";
 
-window.open(link,"_blank");
+const short="https://earnlinks.in/api?api="+API+"&url="+encodeURIComponent(RETURN_URL);
+
+window.open(short,"_blank");
 
 }
-
-
 
 function showKey(){
 
 const key=randomKey();
 
-const box=document.getElementById("keybox");
-
-box.innerText=key;
-
-document.getElementById("status").innerHTML="✅ Key generated. Copy fast!";
+document.getElementById("keyBox").innerHTML=key;
 
 navigator.clipboard.writeText(key);
 
-keyGenerated=true;
+document.getElementById("status").innerHTML="✅ Key copied automatically";
 
-startExpire();
+expire();
 
 }
 
-
-function startExpire(){
+function expire(){
 
 let time=5;
 
-const expire=document.getElementById("expire");
-
-expire.innerHTML="Page expires in "+time+" seconds";
-
 const timer=setInterval(()=>{
+
+document.getElementById("status").innerHTML="Page expire in "+time+" sec";
 
 time--;
 
-expire.innerHTML="Page expires in "+time+" seconds";
-
-if(time<=0){
+if(time<0){
 
 clearInterval(timer);
 
@@ -211,9 +154,7 @@ document.body.innerHTML="<h2 style='color:red;text-align:center'>KEY EXPIRED</h2
 
 }
 
-
-
-function checkReturn(){
+function check(){
 
 const params=new URLSearchParams(window.location.search);
 
@@ -225,19 +166,10 @@ showKey();
 
 }
 
-document.getElementById("keybox").onclick=function(){
-
-if(!keyGenerated)return;
-
-navigator.clipboard.writeText(this.innerText);
-
-this.innerText="COPIED!";
-
-}
-
-checkReturn();
+check();
 
 </script>
 
 </body>
+
 </html>
