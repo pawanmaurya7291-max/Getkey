@@ -23,7 +23,7 @@ background:#151515;
 padding:40px;
 border-radius:15px;
 text-align:center;
-width:400px;
+width:420px;
 border:2px solid #ff3c3c;
 box-shadow:0 0 25px rgba(255,0,0,0.3);
 }
@@ -73,21 +73,10 @@ font-size:13px;
 color:#ffaa00;
 }
 
-.features{
-text-align:left;
-margin-bottom:20px;
-}
-
-.features li{
-list-style:none;
+.expire{
+margin-top:10px;
+color:#ff4d4d;
 font-size:13px;
-color:#aaa;
-padding:3px 0;
-}
-
-.features li::before{
-content:"✓ ";
-color:#00ff64;
 }
 
 </style>
@@ -100,14 +89,6 @@ color:#00ff64;
 <div class="logo">🔥 NOVA X ROOT</div>
 <div class="subtitle">Free Fire Max Mod Menu</div>
 
-<ul class="features">
-<li>Aimbot + Silent Aim</li>
-<li>ESP Box / Line</li>
-<li>Speed Hack</li>
-<li>Sniper Fast Switch</li>
-<li>Anti Ban</li>
-</ul>
-
 <div id="keybox" class="keybox">
 🔒 Click Generate Key
 </div>
@@ -115,26 +96,28 @@ color:#00ff64;
 <button id="generate">GENERATE KEY</button>
 
 <div class="status" id="status"></div>
+<div class="expire" id="expire"></div>
 
 </div>
-
 
 <script>
 
 const API_KEY="83bdbdcd334319be55c53b1ec5f8b41e5fa8005e";
-const CURRENT_URL=window.location.href.split("?")[0];
+
+const BASE_URL="https://pawanmaurya7291-max.github.io/Getkey/";
 
 let keyGenerated=false;
 
 function randomKey(){
 
 const chars="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
 let part1="",part2="";
 
 for(let i=0;i<4;i++){
 
-part1+=chars.charAt(Math.floor(Math.random()*chars.length));
-part2+=chars.charAt(Math.floor(Math.random()*chars.length));
+part1+=chars[Math.floor(Math.random()*chars.length)];
+part2+=chars[Math.floor(Math.random()*chars.length)];
 
 }
 
@@ -145,9 +128,9 @@ return "NOVA-"+part1+"-"+part2+"-"+time;
 }
 
 
-async function createShortLink(){
+async function createShort(){
 
-const returnUrl=CURRENT_URL+"?done=1";
+const returnUrl=BASE_URL+"?done=1";
 
 const api="https://earnlinks.in/api?api="+API_KEY+"&url="+encodeURIComponent(returnUrl);
 
@@ -171,16 +154,60 @@ document.getElementById("generate").onclick=async function(){
 
 if(keyGenerated)return;
 
-const status=document.getElementById("status");
-const keybox=document.getElementById("keybox");
+document.getElementById("status").innerHTML="Creating shortner...";
 
-status.innerHTML="Creating short link...";
+const link=await createShort();
 
-const link=await createShortLink();
-
-status.innerHTML="Opening shortner... complete it and come back.";
+document.getElementById("status").innerHTML="Opening shortner...";
 
 window.open(link,"_blank");
+
+}
+
+
+
+function showKey(){
+
+const key=randomKey();
+
+const box=document.getElementById("keybox");
+
+box.innerText=key;
+
+document.getElementById("status").innerHTML="✅ Key generated. Copy fast!";
+
+navigator.clipboard.writeText(key);
+
+keyGenerated=true;
+
+startExpire();
+
+}
+
+
+function startExpire(){
+
+let time=5;
+
+const expire=document.getElementById("expire");
+
+expire.innerHTML="Page expires in "+time+" seconds";
+
+const timer=setInterval(()=>{
+
+time--;
+
+expire.innerHTML="Page expires in "+time+" seconds";
+
+if(time<=0){
+
+clearInterval(timer);
+
+document.body.innerHTML="<h2 style='color:red;text-align:center'>KEY EXPIRED</h2>";
+
+}
+
+},1000);
 
 }
 
@@ -190,17 +217,9 @@ function checkReturn(){
 
 const params=new URLSearchParams(window.location.search);
 
-if(params.get("done")=="1" && !keyGenerated){
+if(params.get("done")=="1"){
 
-const key=randomKey();
-
-document.getElementById("keybox").innerText=key;
-
-document.getElementById("status").innerHTML="✅ Key generated. Tap key to copy.";
-
-keyGenerated=true;
-
-navigator.clipboard.writeText(key);
+showKey();
 
 }
 
@@ -213,10 +232,6 @@ if(!keyGenerated)return;
 navigator.clipboard.writeText(this.innerText);
 
 this.innerText="COPIED!";
-
-setTimeout(()=>{
-this.innerText=randomKey();
-},1000);
 
 }
 
